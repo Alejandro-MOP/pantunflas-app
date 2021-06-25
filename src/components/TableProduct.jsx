@@ -16,8 +16,8 @@ const TableProduct = ({ products, setProducts, setCurrentProduct }) => {
 	return (
 		<div className='mt-5 pt-3'>
 			<h2 className='text-center text-primary'>Inventario</h2>
-			<Table>
-				<thead>
+			<Table hover>
+				<thead className='text-center thead-dark'>
 					<tr>
 						<th>#</th>
 						<th>Nombre</th>
@@ -30,7 +30,7 @@ const TableProduct = ({ products, setProducts, setCurrentProduct }) => {
 				</thead>
 				<tbody>
 					{products.map(product => (
-						<tr key={product.id}>
+						<tr key={product.id} className='text-center'>
 							<th scope='row'>{product.id}</th>
 							<td>{product.nombre}</td>
 							<td>{product.stock}</td>
