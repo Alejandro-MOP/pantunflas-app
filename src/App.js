@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import { Container } from 'reactstrap';
+import FormProduct from './components/FormProduct';
+import Navbar from './components/Navbar';
+import TableProduct from './components/TableProduct';
+import { getProducts } from './services/products.api';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+	const [products, setProducts] = useState([]);
+	const [currentProduct, setCurrentProduct] = useState({});
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	useEffect(() => getAllProducts(), []);
+
+	const getAllProducts = async () => {
+		try {
+			const { data } = await getProducts();
+			setProducts(data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	return (
+		<>
+			<Navbar />
+
+			<Container className='d-flex flex-column justify-content-between align-items-center my-3'>
+				<FormProduct
+					currentProduct={currentProduct}
+					getAllProducts={getAllProducts}
+				/>
+				{products.length !== 0 ? (
+					<TableProduct
+						products={products}
+						setProducts={setProducts}
+						setCurrentProduct={setCurrentProduct}
+					/>
+				) : (
+					<p className='text-center text-success mt-5'>
+						No hay productos en el inventario, agrega uno.
+					</p>
+				)}
+			</Container>
+		</>
+	);
+};
+
+// const styles = {};
 
 export default App;
