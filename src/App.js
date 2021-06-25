@@ -28,6 +28,7 @@ const App = () => {
 			<Container className='d-flex flex-column justify-content-between align-items-center my-3'>
 				<FormProduct
 					currentProduct={currentProduct}
+					setCurrentProduct={setCurrentProduct}
 					getAllProducts={getAllProducts}
 				/>
 				{products.length !== 0 ? (

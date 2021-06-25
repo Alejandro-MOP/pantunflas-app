@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Input, Row } from 'reactstrap';
-import { postProduct } from '../services/products.api';
+
+import { postProduct, updateProduct } from '../services/products.api';
 
 const productState = {
 	nombre: '',
@@ -9,11 +10,15 @@ const productState = {
 	no_modelo: '',
 };
 
-const FormProduct = ({ currentProduct, getAllProducts }) => {
-	const [product, setProduct] = useState(productState);
+const FormProduct = ({ currentProduct, setCurrentProduct, getAllProducts }) => {
+	const [product, setProduct] = useState({});
 
 	useEffect(() => {
-		setProduct(currentProduct);
+		setProduct(
+			Object.keys(currentProduct).length === 0
+				? productState
+				: currentProduct,
+		);
 	}, [currentProduct]);
 
 	const handleChange = event => {
@@ -43,6 +48,17 @@ const FormProduct = ({ currentProduct, getAllProducts }) => {
 		}
 	};
 
+	const handleUpdate = async product => {
+		try {
+			await updateProduct(product);
+			setCurrentProduct({});
+			getAllProducts();
+			setProduct(productState);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<Row>
 			<Col md='6'>
@@ -52,7 +68,7 @@ const FormProduct = ({ currentProduct, getAllProducts }) => {
 						type='text'
 						placeholder='Nombre'
 						name='nombre'
-						value={product.nombre}
+						value={product.nombre === '' ? '' : product.nombre}
 						style={styles.input}
 						onChange={handleChange}
 					/>
@@ -86,14 +102,28 @@ const FormProduct = ({ currentProduct, getAllProducts }) => {
 						onChange={handleChange}
 						style={styles.input}
 					/>
-
-					<Button
-						color='success'
-						style={styles.button}
-						onClick={handleSubmit}
-					>
-						Agregar Producto
-					</Button>
+					{
+						//prettier-ignore
+						Object.keys(currentProduct).length === 0
+							? (
+								<Button
+									color='success'
+									style={styles.button}
+									onClick={handleSubmit}
+								>
+									Agregar Producto
+								</Button>
+							)
+							: (
+								<Button
+									color='primary'
+									style={styles.button}
+									onClick={() => handleUpdate(product)}
+								>
+									Actualizar Producto
+								</Button>
+							)
+					}
 				</div>
 			</Col>
 		</Row>
